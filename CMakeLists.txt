@@ -5,7 +5,20 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CTest)
 
-add_library(quirewise_crypto STATIC src/crypto.c)
+set(QW_CRYPTO_SOURCES
+    src/crypto.c
+    src/aes128.c
+    src/aes256.c
+    src/blowfish.c
+    src/blowfish_tables.c
+    src/founder_keystream.c
+    src/md5.c
+    src/pdg_deslike.c
+    src/pdg_des_tables.c
+    src/tea.c
+    third_party/aes/aes.c)
+
+add_library(quirewise_crypto STATIC ${QW_CRYPTO_SOURCES})
 add_library(Quirewise::Crypto ALIAS quirewise_crypto)
 set_target_properties(quirewise_crypto PROPERTIES
     EXPORT_NAME Crypto
@@ -13,7 +26,12 @@ set_target_properties(quirewise_crypto PROPERTIES
 target_compile_features(quirewise_crypto PUBLIC c_std_11)
 target_include_directories(quirewise_crypto PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/aes")
+set_source_files_properties(
+    src/aes128.c
+    third_party/aes/aes.c
+    PROPERTIES COMPILE_DEFINITIONS "CBC=0;CTR=0;ECB=1")
 
 if(BUILD_TESTING)
     add_executable(quirewise_crypto_tests tests/test_crypto.c)
