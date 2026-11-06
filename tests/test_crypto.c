@@ -140,7 +140,7 @@ static int test_block_crypto(void)
 static int test_founder_keystream(void)
 {
     static const uint8_t key[] = {'k', 'e', 'y'};
-    static const char expected_hex[] = "89143944afcde56dbd6cbac09d1f34a7";
+    static const char expected_hex[] = "213a9a0e08743cf6536c9b40a485d84b";
     uint8_t stream[16];
     uint8_t expected[16];
 

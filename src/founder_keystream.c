@@ -25,6 +25,7 @@ QwCryptoStatus qw_crypto_founder_ceb_keystream(const uint8_t *key,
             qw_crypto_secure_zero(&temporary, sizeof(temporary));
         }
     }
+    j = 0;
     for (size_t n = 0; n < stream_size; ++n) {
         uint8_t old_si;
         i = (uint8_t)(i + 1u);
@@ -32,7 +33,7 @@ QwCryptoStatus qw_crypto_founder_ceb_keystream(const uint8_t *key,
         j = (uint8_t)(j + old_si);
         state[i] = state[j];
         state[j] = state[old_si];
-        stream[n] = state[(uint8_t)(state[old_si] + state[i])];
+        stream[n] = state[(uint8_t)(state[i] + state[j])];
     }
     qw_crypto_secure_zero(state, sizeof(state));
     qw_crypto_secure_zero(&i, sizeof(i));
