@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
 project(QuirewiseCrypto VERSION 0.1.0 LANGUAGES C)
+option(QUIREWISE_BUILD_SHARED "Build Quirewise libraries as shared libraries" OFF)
+if(QUIREWISE_BUILD_SHARED)
+    set(QW_LIBRARY_TYPE SHARED)
+else()
+    set(QW_LIBRARY_TYPE STATIC)
+endif()
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -18,7 +24,7 @@ set(QW_CRYPTO_SOURCES
     src/tea.c
     third_party/aes/aes.c)
 
-add_library(quirewise_crypto STATIC ${QW_CRYPTO_SOURCES})
+add_library(quirewise_crypto ${QW_LIBRARY_TYPE} ${QW_CRYPTO_SOURCES})
 add_library(Quirewise::Crypto ALIAS quirewise_crypto)
 set_target_properties(quirewise_crypto PROPERTIES
     EXPORT_NAME Crypto
@@ -62,3 +68,9 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/QuirewiseCryptoConfig.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/QuirewiseCryptoConfigVersion.cmake"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/QuirewiseCrypto")
+
+if(QUIREWISE_BUILD_SHARED AND WIN32)
+    set_target_properties(
+        quirewise_crypto
+        PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
