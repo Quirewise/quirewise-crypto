@@ -30,7 +30,18 @@ void qw_crypto_secure_zero(void *memory, size_t size);
 QwCryptoStatus qw_crypto_md5_digest(const void *data, size_t size,
                                     uint8_t digest[16]);
 
-/* Decrypt AES-128 or AES-256 ECB data in place. Size must be block aligned. */
+/* SHA-2 one-shot digests (FIPS 180-4). NULL data is accepted only for size 0. */
+QwCryptoStatus qw_crypto_sha256(const uint8_t *data, size_t size,
+                                uint8_t out[32]);
+QwCryptoStatus qw_crypto_sha384(const uint8_t *data, size_t size,
+                                uint8_t out[48]);
+QwCryptoStatus qw_crypto_sha512(const uint8_t *data, size_t size,
+                                uint8_t out[64]);
+
+/* Encrypt or decrypt AES-128/AES-256 ECB data in place. Size must be block
+ * aligned. */
+QwCryptoStatus qw_crypto_aes128_ecb_encrypt(const uint8_t key[16],
+                                            uint8_t *data, size_t size);
 QwCryptoStatus qw_crypto_aes128_ecb_decrypt(const uint8_t key[16],
                                             uint8_t *data, size_t size);
 QwCryptoStatus qw_crypto_aes256_ecb_decrypt(const uint8_t key[32],

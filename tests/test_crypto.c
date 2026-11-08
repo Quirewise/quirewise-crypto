@@ -296,6 +296,70 @@ static int test_des_modes(void)
     return 1;
 }
 
+static int test_sha2(void)
+{
+    static const char sha256_empty_hex[] =
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+    static const char sha256_abc_hex[] =
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
+    static const char sha384_abc_hex[] =
+        "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed"
+        "8086072ba1e7cc2358baeca134c825a7";
+    static const char sha512_abc_hex[] =
+        "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a"
+        "2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f";
+    uint8_t digest[64];
+    uint8_t expected[64];
+
+    if (!parse_hex(sha256_empty_hex, expected, 32u) ||
+        qw_crypto_sha256(NULL, 0u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, 32u)) return 0;
+    if (!parse_hex(sha256_abc_hex, expected, 32u) ||
+        qw_crypto_sha256((const uint8_t *)"abc", 3u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, 32u)) return 0;
+    if (!parse_hex(sha384_abc_hex, expected, 48u) ||
+        qw_crypto_sha384((const uint8_t *)"abc", 3u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, 48u)) return 0;
+    if (!parse_hex(sha512_abc_hex, expected, 64u) ||
+        qw_crypto_sha512((const uint8_t *)"abc", 3u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, 64u)) return 0;
+    /* Multi-block input must match the published "abcdbc..." digest. */
+    {
+        static const char sha256_long_hex[] =
+            "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1";
+        static const char message[] =
+            "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+        if (!parse_hex(sha256_long_hex, expected, 32u) ||
+            qw_crypto_sha256((const uint8_t *)message,
+                             sizeof(message) - 1u, digest) != QW_CRYPTO_OK ||
+            !equal_bytes(digest, expected, 32u)) return 0;
+    }
+    return qw_crypto_sha256(NULL, 1u, digest) ==
+           QW_CRYPTO_ERR_INVALID_ARGUMENT;
+}
+
+static int test_aes_encrypt(void)
+{
+    static const char key_hex[] = "2b7e151628aed2a6abf7158809cf4f3c";
+    static const char plain_hex[] = "6bc1bee22e409f96e93d7e117393172a";
+    static const char cipher_hex[] = "3ad77bb40d7a3660a89ecaf32466ef97";
+    uint8_t key[16];
+    uint8_t block[16];
+    uint8_t plain[16];
+    uint8_t expected[16];
+    if (!parse_hex(key_hex, key, sizeof(key)) ||
+        !parse_hex(plain_hex, plain, sizeof(plain)) ||
+        !parse_hex(cipher_hex, expected, sizeof(expected))) return 0;
+    memcpy(block, plain, sizeof(block));
+    if (qw_crypto_aes128_ecb_encrypt(key, block, sizeof(block)) !=
+            QW_CRYPTO_OK ||
+        !equal_bytes(block, expected, sizeof(expected))) return 0;
+    if (qw_crypto_aes128_ecb_decrypt(key, block, sizeof(block)) !=
+            QW_CRYPTO_OK ||
+        !equal_bytes(block, plain, sizeof(plain))) return 0;
+    return 1;
+}
+
 static int test_secure_zero(void)
 {
     uint8_t data[33];
@@ -314,6 +378,8 @@ int main(void)
         return 1;
     }
     if (!test_md5()) { fputs("MD5 vectors failed\n", stderr); return 1; }
+    if (!test_sha2()) { fputs("SHA-2 vectors failed\n", stderr); return 1; }
+    if (!test_aes_encrypt()) { fputs("AES-128 encrypt vector failed\n", stderr); return 1; }
     if (!test_block_crypto()) { fputs("Block cipher vectors failed\n", stderr); return 1; }
     if (!test_founder_keystream()) { fputs("Founder CEB vector failed\n", stderr); return 1; }
     if (!test_pdg_deslike()) { fputs("PDG DES-like vector failed\n", stderr); return 1; }

@@ -1,10 +1,15 @@
 # Quirewise Crypto
 
 Quirewise Crypto is a small, dependency-free package for the fixed cryptographic
-operations used by the Founder CEB reader:
+operations used by the format readers:
 
 - 512-bit RSA modular exponentiation over little-endian byte strings;
-- three-key 3DES CFB64 decryption and OFB64 transformation;
+- three-key 3DES CFB64 decryption, OFB64 transformation and the PDG DES-like
+  block transform;
+- AES-128/AES-256 ECB (encrypt and decrypt), Blowfish ECB and the QMC/PDG TEA
+  variants;
+- MD5 and SHA-256/SHA-384/SHA-512 digests;
+- the Founder CEB keystream and a TEA-based 8-byte block cipher;
 - an optimizer-resistant byte clearing function.
 
 It exports the CMake target Quirewise::Crypto and the public header
