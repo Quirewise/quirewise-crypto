@@ -22,8 +22,7 @@ set(QW_CRYPTO_SOURCES
     src/pdg_deslike.c
     src/pdg_des_tables.c
     src/sha2.c
-    src/tea.c
-    third_party/aes/aes.c)
+    src/tea.c)
 
 add_library(quirewise_crypto ${QW_LIBRARY_TYPE} ${QW_CRYPTO_SOURCES})
 add_library(Quirewise::Crypto ALIAS quirewise_crypto)
@@ -33,12 +32,7 @@ set_target_properties(quirewise_crypto PROPERTIES
 target_compile_features(quirewise_crypto PUBLIC c_std_11)
 target_include_directories(quirewise_crypto PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/aes")
-set_source_files_properties(
-    src/aes128.c
-    third_party/aes/aes.c
-    PROPERTIES COMPILE_DEFINITIONS "CBC=0;CTR=0;ECB=1")
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
 if(BUILD_TESTING)
     add_executable(quirewise_crypto_tests tests/test_crypto.c)
