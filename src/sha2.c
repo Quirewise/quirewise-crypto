@@ -84,7 +84,11 @@ QwCryptoStatus qw_crypto_sha256(const uint8_t *data, size_t size,
         offset += 64u;
     }
     memset(block, 0, sizeof(block));
-    memcpy(block, data + offset, size - offset);
+    /* A zero-length digest is valid with data == NULL; memcpy(dst, NULL, 0)
+     * is still undefined behaviour and UBSan rejects it. */
+    if (size > offset) {
+        memcpy(block, data + offset, size - offset);
+    }
     block[size - offset] = 0x80u;
     if (size - offset >= 56u) {
         sha256_compress(state, block);
@@ -191,7 +195,11 @@ static QwCryptoStatus sha512_family(const uint8_t *data, size_t size,
         offset += 128u;
     }
     memset(block, 0, sizeof(block));
-    memcpy(block, data + offset, size - offset);
+    /* A zero-length digest is valid with data == NULL; memcpy(dst, NULL, 0)
+     * is still undefined behaviour and UBSan rejects it. */
+    if (size > offset) {
+        memcpy(block, data + offset, size - offset);
+    }
     block[size - offset] = 0x80u;
     if (size - offset >= 112u) {
         sha512_compress(state, block);
