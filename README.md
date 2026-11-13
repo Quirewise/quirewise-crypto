@@ -6,15 +6,17 @@ operations used by the format readers:
 - 512-bit RSA modular exponentiation over little-endian byte strings;
 - three-key 3DES CFB64 decryption, OFB64 transformation and the PDG DES-like
   block transform;
-- AES-128/AES-256 ECB (encrypt and decrypt), Blowfish ECB and the QMC/PDG TEA
-  variants;
+- AES-128 ECB encrypt/decrypt, **AES-256 ECB decrypt only**, Blowfish ECB
+  decrypt and the QMC/PDG TEA variants;
 - MD5 and SHA-256/SHA-384/SHA-512 digests;
 - the Founder CEB keystream and a TEA-based 8-byte block cipher;
 - an optimizer-resistant byte clearing function.
 
-It exports the CMake target Quirewise::Crypto and the public header
-quirewise/crypto.h. The API does not expose OpenSSL types or provide unrelated
-algorithms.
+It exports the CMake target `Quirewise::Crypto` and the public header
+`quirewise/crypto.h`. The API does not expose OpenSSL types or provide unrelated
+algorithms. There is no padding, authentication, KDF or key schedule beyond the
+fixed operations above; callers must validate decrypted data using the
+enclosing format.
 
 ## Build and install
 
@@ -26,7 +28,7 @@ Configure with CMake, build the package, run CTest, and install with a prefix:
     cmake --install build --prefix install
 
 Consumers can discover the installed package with
-find_package(QuirewiseCrypto CONFIG REQUIRED).
+`find_package(QuirewiseCrypto CONFIG REQUIRED)`.
 
 The CFB and OFB operations have no authentication or padding layer. They
 preserve the byte-stream behavior expected by CEB, including partial final
