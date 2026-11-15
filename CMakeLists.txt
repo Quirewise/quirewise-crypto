@@ -21,6 +21,7 @@ set(QW_CRYPTO_SOURCES
     src/md5.c
     src/pdg_deslike.c
     src/pdg_des_tables.c
+    src/ripemd128.c
     src/sha2.c
     src/tea.c)
 

@@ -9,7 +9,7 @@ CMake package that needs no Quirewise application code.
 
 ## What it does
 
-- Computes one-shot MD5, SHA-256, SHA-384 and SHA-512 digests.
+- Computes one-shot MD5, RIPEMD-128, SHA-256, SHA-384 and SHA-512 digests.
 - Encrypts and decrypts AES-128 ECB, and decrypts AES-256 ECB, in place.
 - Decrypts Blowfish ECB with 4 to 56-byte keys.
 - Decrypts 3DES CFB64 and transforms 3DES OFB64, including partial final
@@ -107,7 +107,7 @@ int main(void)
 | Task | Functions |
 |---|---|
 | Version and wiping | `qw_crypto_abi_version`, `qw_crypto_secure_zero` |
-| Digests | `qw_crypto_md5_digest`, `qw_crypto_sha256`, `qw_crypto_sha384`, `qw_crypto_sha512` |
+| Digests | `qw_crypto_md5_digest`, `qw_crypto_ripemd128`, `qw_crypto_sha256`, `qw_crypto_sha384`, `qw_crypto_sha512` |
 | AES | `qw_crypto_aes128_ecb_encrypt`, `qw_crypto_aes128_ecb_decrypt`, `qw_crypto_aes256_ecb_decrypt` |
 | TEA | `qw_crypto_tea64_ecb_decrypt`, `qw_crypto_pdg_tea128_ecb_decrypt` |
 | PDG DES-like | `qw_crypto_pdg_deslike_schedule_init`, `qw_crypto_pdg_deslike_transform16`, `qw_crypto_pdg_deslike_schedule_clear` |
@@ -136,7 +136,8 @@ int main(void)
 
 ## Testing
 
-`ctest` runs `quirewise_crypto_known_answers`, covering MD5 and SHA-2 vectors,
+`ctest` runs `quirewise_crypto_known_answers`, covering MD5, RIPEMD-128 and SHA-2
+vectors,
 AES-128/256, Blowfish, both TEA variants, the PDG DES-like transform, the
 Founder keystream, 3DES CFB64/OFB64, 512-bit RSA, `secure_zero` and the ABI
 version.

@@ -30,6 +30,10 @@ void qw_crypto_secure_zero(void *memory, size_t size);
 QwCryptoStatus qw_crypto_md5_digest(const void *data, size_t size,
                                     uint8_t digest[16]);
 
+/* RIPEMD-128 one-shot digest (ISO/IEC 10118-3), used by MDict key blocks. */
+QwCryptoStatus qw_crypto_ripemd128(const uint8_t *data, size_t size,
+                                   uint8_t digest[16]);
+
 /* SHA-2 one-shot digests (FIPS 180-4). NULL data is accepted only for size 0. */
 QwCryptoStatus qw_crypto_sha256(const uint8_t *data, size_t size,
                                 uint8_t out[32]);

@@ -274,7 +274,7 @@ A `key_size` of 0 is accepted only when `stream_size` is also 0.
 | PDG TEA128 | 16-byte blocks, little-endian, 16-byte key, partial tail ignored |
 | 3DES | 24-byte key, 8-byte IV, CFB64 or OFB64, any length |
 | RSA | 64-byte little-endian values, 512-bit modulus |
-| Digests | MD5 16 bytes, SHA-256 32, SHA-384 48, SHA-512 64 |
+| Digests | MD5 16 bytes, RIPEMD-128 16, SHA-256 32, SHA-384 48, SHA-512 64 |
 
 - There is no stream API for digests, no AES-256 encryption, no Blowfish
   encryption, no AES-CBC/CTR/GCM, no HMAC and no KDF.

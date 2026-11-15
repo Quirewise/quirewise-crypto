@@ -360,6 +360,37 @@ static int test_aes_encrypt(void)
     return 1;
 }
 
+static int test_ripemd128(void)
+{
+    static const char empty_hex[] = "cdf26213a150dc3ecb610f18f6b38b46";
+    static const char a_hex[] = "86be7afa339d0fc7cfc785e72f578d33";
+    static const char abc_hex[] = "c14a12199c66e4ba84636b0f69144c77";
+    static const char message_hex[] = "9e327b3d6e523062afc1132d7df9d1b8";
+    static const char alphabet_hex[] =
+        "fd2aa607f71dc8f510714922b371834e";
+    uint8_t digest[16];
+    uint8_t expected[16];
+
+    if (!parse_hex(empty_hex, expected, sizeof(expected)) ||
+        qw_crypto_ripemd128(NULL, 0u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, sizeof(digest))) return 0;
+    if (!parse_hex(a_hex, expected, sizeof(expected)) ||
+        qw_crypto_ripemd128("a", 1u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, sizeof(digest))) return 0;
+    if (!parse_hex(abc_hex, expected, sizeof(expected)) ||
+        qw_crypto_ripemd128("abc", 3u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, sizeof(digest))) return 0;
+    if (!parse_hex(message_hex, expected, sizeof(expected)) ||
+        qw_crypto_ripemd128("message digest", 14u, digest) != QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, sizeof(digest))) return 0;
+    if (!parse_hex(alphabet_hex, expected, sizeof(expected)) ||
+        qw_crypto_ripemd128("abcdefghijklmnopqrstuvwxyz", 26u, digest) !=
+            QW_CRYPTO_OK ||
+        !equal_bytes(digest, expected, sizeof(digest))) return 0;
+    return qw_crypto_ripemd128(NULL, 1u, digest) ==
+           QW_CRYPTO_ERR_INVALID_ARGUMENT;
+}
+
 static int test_secure_zero(void)
 {
     uint8_t data[33];
@@ -379,6 +410,10 @@ int main(void)
     }
     if (!test_md5()) { fputs("MD5 vectors failed\n", stderr); return 1; }
     if (!test_sha2()) { fputs("SHA-2 vectors failed\n", stderr); return 1; }
+    if (!test_ripemd128()) {
+        fputs("RIPEMD-128 vectors failed\n", stderr);
+        return 1;
+    }
     if (!test_aes_encrypt()) { fputs("AES-128 encrypt vector failed\n", stderr); return 1; }
     if (!test_block_crypto()) { fputs("Block cipher vectors failed\n", stderr); return 1; }
     if (!test_founder_keystream()) { fputs("Founder CEB vector failed\n", stderr); return 1; }
