@@ -37,8 +37,10 @@ QwCryptoStatus qw_crypto_ripemd128(const uint8_t *data, size_t size,
 /* SHA-2 one-shot digests (FIPS 180-4). NULL data is accepted only for size 0. */
 QwCryptoStatus qw_crypto_sha256(const uint8_t *data, size_t size,
                                 uint8_t out[32]);
+/*! Compute SHA-384 of a byte range into out[48]. */
 QwCryptoStatus qw_crypto_sha384(const uint8_t *data, size_t size,
                                 uint8_t out[48]);
+/*! Compute SHA-512 of a byte range into out[64]. */
 QwCryptoStatus qw_crypto_sha512(const uint8_t *data, size_t size,
                                 uint8_t out[64]);
 
@@ -46,8 +48,10 @@ QwCryptoStatus qw_crypto_sha512(const uint8_t *data, size_t size,
  * aligned. */
 QwCryptoStatus qw_crypto_aes128_ecb_encrypt(const uint8_t key[16],
                                             uint8_t *data, size_t size);
+/*! Decrypt AES-128 ECB data in place; size must be a multiple of 16. */
 QwCryptoStatus qw_crypto_aes128_ecb_decrypt(const uint8_t key[16],
                                             uint8_t *data, size_t size);
+/*! Decrypt AES-256 ECB data in place; size must be a multiple of 16. */
 QwCryptoStatus qw_crypto_aes256_ecb_decrypt(const uint8_t key[32],
                                             uint8_t *data, size_t size);
 
@@ -79,8 +83,10 @@ QwCryptoStatus qw_crypto_founder_ceb_keystream(const uint8_t *key,
 /* PDG's DES-like key schedule and 16-byte block transform. */
 QwCryptoStatus qw_crypto_pdg_deslike_schedule_init(
     const uint8_t key[16], QwCryptoPdgDeslikeSchedule *schedule);
+/*! Transform one 16-byte block with the PDG DES-like schedule. */
 QwCryptoStatus qw_crypto_pdg_deslike_transform16(
     uint8_t block[16], const QwCryptoPdgDeslikeSchedule *schedule);
+/*! Zero and release a PDG DES-like schedule. */
 void qw_crypto_pdg_deslike_schedule_clear(QwCryptoPdgDeslikeSchedule *schedule);
 
 /*
@@ -103,6 +109,7 @@ QwCryptoStatus qw_crypto_3des_cfb64_decrypt(
     const uint8_t iv[8],
     uint8_t *data,
     size_t size);
+/*! Encrypt or decrypt with 3DES-OFB64 in place. */
 QwCryptoStatus qw_crypto_3des_ofb64_crypt(
     const uint8_t key[24],
     const uint8_t iv[8],
